@@ -3,11 +3,16 @@ Tired of libraries written by someone who doesn't know the difference between st
 
 ### Mock types
 - Track – doesn't replace a function, just records its usages to ssm/calls*
-- Stub – replaces a function with an fn that accepts any amount of arguments and returns a constant and records its usages to ssm/calls*
-- Wrap – wraps a function result with a provided wrapper and records its usages to ssm/calls*
-- Mock - replaces a function with a provided function and records its usages to ssm/calls*
+- Stub – replaces a function with an fn that accepts any number of arguments and returns a constant. Records its usages to ssm/calls*
+- Wrap – wraps a function result with a provided wrapper. Records its usages to ssm/calls*
+- Mock - replaces a function with a provided override. Records its usages to ssm/calls*
 
 ### Usage
+
+```edn
+{:deps {super-simple-mock/super-simple-mock {:git/url "https://github.com/Defake/super-simple-mock"
+                                             :sha "7f449ccb117023ce7e6c5fa2bcdc2814cde1281e"}}}
+```
 
 ```clojure
 (require '[super-simple-mock.core :as ssm])
