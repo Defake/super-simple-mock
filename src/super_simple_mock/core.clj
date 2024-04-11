@@ -88,17 +88,22 @@
 
 
 (defmacro with-mocks [mocks & body]
-  (assert (zero? (mod (count mocks) 2)))
-  (->> mocks
-       (partition-all 2)
-       (reduce (fn [form mock-vec]
-                 (let [[mock-type args] mock-vec]
-                   (case mock-type
-                     :mock `(mock-fn ~args ~form)
-                     :wrap `(wrap-fn ~args ~form)
-                     :track `(track-fn ~args ~form)
-                     :stub `(stub-fn ~args ~form))))
-               `(do ~@body))))
+  (let [mocks (if (symbol? mocks)
+                @(resolve mocks)
+                mocks)]
+    (assert (vector? mocks))
+    (assert (zero? (mod (count mocks) 2)))
+
+    (->> mocks
+         (partition-all 2)
+         (reduce (fn [form mock-vec]
+                   (let [[mock-type args] mock-vec]
+                     (case mock-type
+                       :mock `(mock-fn ~args ~form)
+                       :wrap `(wrap-fn ~args ~form)
+                       :track `(track-fn ~args ~form)
+                       :stub `(stub-fn ~args ~form))))
+                 `(do ~@body)))))
 
 (comment
  (defn test-mocked-fn [& args]
@@ -126,4 +131,12 @@
   (prn (get-in @calls* ['test-mocked-fn 0])) ;; => [1 2 3]
   (prn (get-in @calls* ['test-wrapped-fn 0])) ;; => [1 2 3]
   (prn (get-in @calls* ['test-tracked-fn 0])) ;; => [1 2 3]
-  (prn (get-in @calls* ['test-stubbed-fn 0])))) ;; => [1 2 3]
+  (prn (get-in @calls* ['test-stubbed-fn 0]))) ;; => [1 2 3]
+
+ ;; If you put your mocks into a variable, you need to quote the mocked functions symbols
+ (def mocks-var [:mock ['test-mocked-fn str]])
+
+ (with-mocks
+  mocks-var
+  (prn (test-mocked-fn 1 2 3)) ;; => "123"
+  (prn (get-in @ssm/calls* ['test-mocked-fn 0])))) ;; => [1 2 3]

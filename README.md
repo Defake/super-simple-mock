@@ -43,5 +43,14 @@ Tired of libraries written by someone who doesn't know the difference between st
  (prn (get-in @ssm/calls* ['test-wrapped-fn 0])) ;; => [1 2 3]
  (prn (get-in @ssm/calls* ['test-tracked-fn 0])) ;; => [1 2 3]
  (prn (get-in @ssm/calls* ['test-stubbed-fn 0]))) ;; => [1 2 3]
+
+;; If you put your mocks into a variable, you need to quote the mocked functions symbols
+(def mocks-var [:mock ['test-mocked-fn str]])
+
+(with-mocks
+ mocks-var
+ (prn (test-mocked-fn 1 2 3)) ;; => "123"
+ (prn (get-in @ssm/calls* ['test-mocked-fn 0]))) ;; => [1 2 3]
+
 ```
 
