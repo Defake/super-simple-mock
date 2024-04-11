@@ -11,7 +11,7 @@ Tired of libraries written by someone who doesn't know the difference between st
 
 ```edn
 {:deps {super-simple-mock/super-simple-mock {:git/url "https://github.com/Defake/super-simple-mock"
-                                             :sha "7f449ccb117023ce7e6c5fa2bcdc2814cde1281e"}}}
+                                             :sha "f88cf399233c42e8c5abc360609aa84579de1d5c"}}}
 ```
 
 ```clojure
